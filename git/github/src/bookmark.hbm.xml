@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class table="bookmark" name="bookmark.SimpleBookmark">
+
+		<id name="id">
+			<column name="id" />
+		</id>
+
+		<property name="bookmark1">
+			<column name="bookmark1" />
+		</property>
+		
+		<property name="bookmark2">
+			<column name="bookmark2" />
+		</property>
+		
+		<property name="bookmark3">
+			<column name="bookmark3" />
+		</property>
+		
+		<property name="bookmark4">
+			<column name="bookmark4" />
+		</property>
+		
+		<property name="bookmark5">
+			<column name="bookmark5" />
+		</property>
+		
+		<property name="bookmark6">
+			<column name="bookmark6" />
+		</property>
+		
+		<property name="bookmark7">
+			<column name="bookmark7" />
+		</property>
+		
+		<property name="bookmark8">
+			<column name="bookmark8" />
+		</property>
+		
+		<property name="bookmark9">
+			<column name="bookmark9" />
+		</property>
+		
+		<property name="bookmark10">
+			<column name="bookmark10" />
+		</property>
+
+
+	</class>
+</hibernate-mapping>

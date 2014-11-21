@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class table="custom" name="custom.SimpleCustom">
+
+		<id name="custNo">
+			<column name="CustNo" />
+		</id>
+
+		<property name="custNum">
+			<column name="CustNum" />
+		</property>
+		
+		<property name="custName">
+			<column name="CustName" />
+		</property>
+		
+		<property name="ownerName">
+			<column name="OwnerName" />
+		</property>
+		
+		<property name="custMail">
+			<column name="CustMail" />
+		</property>
+		
+		<property name="custTel">
+			<column name="CustTel" />
+		</property>
+		
+		<property name="custFax">
+			<column name="CustFax" />
+		</property>
+		
+		<property name="custEmp1">
+			<column name="CustEmp1" />
+		</property>
+		
+		<property name="custEmp2">
+			<column name="CustEmp2" />
+		</property>
+		
+		<property name="custEmp3">
+			<column name="CustEmp3" />
+		</property>
+		
+		<property name="empTel1">
+			<column name="EmpTel1" />
+		</property>
+		
+		<property name="empTel2">
+			<column name="EmpTel2" />
+		</property>
+		
+		<property name="empTel3">
+			<column name="EmpTel3" />
+		</property>
+		
+		<property name="addDate">
+			<column name="AddDate" />
+		</property>
+		
+		<property name="stopFlag">
+			<column name="StopFlag" />
+		</property>
+		
+		<property name="stopDate">
+			<column name="StopDate" />
+		</property>
+
+	</class>
+</hibernate-mapping>

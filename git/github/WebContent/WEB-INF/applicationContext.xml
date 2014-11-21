@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:jee="http://www.springframework.org/schema/jee"
+	   xmlns:lang="http://www.springframework.org/schema/lang"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+	   http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+	   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	   http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
+	   
+	   >
+ 
+ 	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+	  <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+		  <tx:method name="*" propagation="REQUIRED" rollback-for="Throwable" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="simpleUsersTransactionPointcut" expression="execution(* users.SimpleUsersDAO.*(..))"/>
+		<aop:pointcut id="simpleProductTransactionPointcut" expression="execution(* product.SimpleProductDAO.*(..))"/>
+		<aop:pointcut id="simpleCustomTransactionPointcut" expression="execution(* custom.SimpleCustomDAO.*(..))"/>
+		
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="simpleUsersTransactionPointcut"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="simpleProductTransactionPointcut"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="simpleCustomTransactionPointcut"/>
+	</aop:config>
+	
+ 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:db.properties</value>
+		</property>
+	</bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+ 	 	<property name="dataSource" ref="dataSource"/>
+ 		<property name="configLocation">
+        	<value>classpath:hibernate.cfg.xml</value>
+    	</property>
+    	
+    	<property name="hibernateProperties">
+	    	<props>
+	       		<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+	        	<prop key="hibernate.connection.driver_class">${driverClass}</prop>
+			 	<prop key="hibernate.connection.url">${jdbcUrl}</prop> 
+				<prop key="hibernate.connection.username">${user}</prop>
+				<prop key="hibernate.connection.password">${password}</prop>
+				<prop key="cache.provider_class">${hibernate.cache.provider_class}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.connection.provider_class">${hibernate.connection.provider_class}</prop>
+				<prop key="hibernate.c3p0.min_size">${hibernate.c3p0.min_size}</prop>
+				<prop key="hibernate.c3p0.max_size">${hibernate.c3p0.max_size}</prop>
+				<prop key="hibernate.c3p0.timeout">${hibernate.c3p0.timeout}</prop>
+				<prop key="hibernate.c3p0.max_statements">${hibernate.c3p0.max_statements}</prop>
+				<prop key="hibernate.c3p0.idle_test_period">${hibernate.c3p0.idle_test_period}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+			</props>
+		</property>
+    </bean>
+ 	
+ 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+ 		<property name="driverClass" value="${driverClass}" />
+		<property name="jdbcUrl" value="${jdbcUrl}" />
+		<property name="user" value="${user}" />
+		<property name="password" value="${password}" />
+		<property name="initialPoolSize" value="${initialPoolSize}" />
+        <property name="minPoolSize" value="${minPoolSize}" />
+        <property name="maxPoolSize" value="${maxPoolSize}" />
+	</bean>	
+	
+	<bean id="simpleCustomParamMethodNameResolver" class="common.SimpleCustomParamMethodNameResolver">
+	   <property name="paramName" value="action"/>
+	   <property name="defaultMethodName" value="uList"/>
+	</bean>
+	   
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	   <property name="mappings">
+	      <map>
+	         <entry key="/users.do" value-ref="simpleUsersController"/> <!--  테스트 -->
+	         <entry key="/authenticator.do*" value-ref="authenticator"/>   <!--  로그인 -->
+	         <!-- <entry key="/bookmark.do*" value-ref="simpleBookmarkController"/>    북마크 -->
+	         <entry key="/product.do" value-ref="simpleProductController"/> <!--  제품 -->
+	         <entry key="/custom.do" value-ref="simpleCustomController"/> <!--  업체정보 -->
+	      </map>
+	   </property>
+	</bean> 
+
+	 <!-- 사용자 /회원관리 -->
+    <bean id="simpleUsersController" class="users.SimpleUsersController">
+		<property name="methodNameResolver" ref="simpleCustomParamMethodNameResolver"/>
+	    <property name="delegate" ref="simpleUsersDelegate"/>
+	</bean>     
+    <bean id="simpleUsersDelegate" class="users.SimpleUsersDelegate">
+		<property name="UsersDAO" ref="simpleUsersDAO"></property>    
+	</bean>
+	<bean id="simpleUsersDAO" class="users.SimpleUsersDAO">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<!-- 필터 bypass 하는 로긴용 컨트롤러 -->
+	<bean id="authenticator" class="system.security.Authenticator">
+		<property name="methodNameResolver" ref="simpleCustomParamMethodNameResolver"/>
+	    <property name="delegate" ref="authenticatorDelegator"/>
+	</bean>
+	<bean id="authenticatorDelegator" class="system.security.AuthenticatorDelegate">
+		<property name="UsersDAO" ref="simpleUsersDAO"></property>    
+	</bean>
+
+	<!-- 사용자 로긴 필터 -->
+	<bean id="securityFilter" class="system.security.SecurityFilter">
+        <property name="userTracer" ref="simpleUserTracer"></property>
+        <property name="UsersDAO" ref="simpleUsersDAO"></property>
+    </bean>
+    
+    <!-- 사용자 추적 -->
+	<bean id="simpleUserTracer" class="system.security.SimpleUserTracer"/>
+	
+	<!-- 제품 -->
+    <bean id="simpleProductController" class="product.SimpleProductController">
+		<property name="methodNameResolver" ref="simpleCustomParamMethodNameResolver"/>
+	    <property name="delegate" ref="simpleProductDelegate"/>
+	</bean>     
+    <bean id="simpleProductDelegate" class="product.SimpleProductDelegate">
+		<property name="productDAO" ref="simpleProductDAO"></property>    
+	</bean>
+	<bean id="simpleProductDAO" class="product.SimpleProductDAO">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 업체정보 -->
+    <bean id="simpleCustomController" class="custom.SimpleCustomController">
+		<property name="methodNameResolver" ref="simpleCustomParamMethodNameResolver"/>
+	    <property name="delegate" ref="simpleCustomDelegate"/>
+	</bean>     
+    <bean id="simpleCustomDelegate" class="custom.SimpleCustomDelegate">
+		<property name="customDAO" ref="simpleCustomDAO"></property>    
+	</bean>
+	<bean id="simpleCustomDAO" class="custom.SimpleCustomDAO">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+</beans>
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class table="users" name="users.SimpleUsers">
+
+		<id name="id">
+			<column name="id" />
+		</id>
+
+		<property name="compNo">
+			<column name="CompNo" />
+		</property>
+		
+		<property name="userId">
+			<column name="UserId" />
+		</property>
+		
+		<property name="userName">
+			<column name="UserName" />
+		</property>
+		
+		<property name="teamCode">
+			<column name="TeamCode" />
+		</property>
+		
+		<property name="userPass">
+			<column name="UserPass" />
+		</property>
+		
+		<property name="access">
+			<column name="Access" />
+		</property>
+		
+		<property name="addDate">
+			<column name="AddDate" />
+		</property>
+		
+		<property name="stopFlag">
+			<column name="StopFlag" />
+		</property>
+		
+		<property name="stopDate">
+			<column name="StopDate" />
+		</property>
+
+	</class>
+</hibernate-mapping>

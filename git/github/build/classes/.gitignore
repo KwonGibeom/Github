@@ -1,0 +1,13 @@
+/abstraction/
+/bookmark/
+/bookmark.hbm.xml
+/common/
+/custom/
+/custom.hbm.xml
+/db.properties
+/hibernate.cfg.xml
+/product/
+/product.hbm.xml
+/system/
+/users/
+/users.hbm.xml
