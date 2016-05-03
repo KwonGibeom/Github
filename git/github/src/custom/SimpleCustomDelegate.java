@@ -213,8 +213,6 @@ public class SimpleCustomDelegate extends SimpleDelegate{
 		String empTel2 = Function.nullChk(request.getParameter("empTel2"), "");
 		String empTel3 = Function.nullChk(request.getParameter("empTel3"), "");
 		
-		System.out.println(articleId+custNum);
-		
 		SimpleCustom found = customDAO.read(SimpleCustom.class, articleId);
 		found.setCustNum(custNum);
 		found.setCustName(custName);
